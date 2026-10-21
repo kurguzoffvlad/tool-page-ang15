@@ -1,12 +1,12 @@
 {
-  "name": "tool-page-ang15",
-  "version": "0.0.2",
-  "peerDependencies": {
-    "@angular/common": "^15.2.0",
-    "@angular/core": "^15.2.0"
-  },
-  "dependencies": {
-    "tslib": "^2.3.0"
-  },
-  "sideEffects": false
+	"name": "tool-page-ang15",
+	"version": "0.0.4",
+	"peerDependencies": {
+		"@angular/common": "^15.2.0",
+		"@angular/core": "^15.2.0"
+	},
+	"dependencies": {
+		"tslib": "^2.3.0"
+	},
+	"sideEffects": false
 }
