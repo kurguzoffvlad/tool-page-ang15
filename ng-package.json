@@ -3,5 +3,8 @@
 	"dest": "../../dist/tool-page-ang15",
 	"lib": {
 		"entryFile": "src/public-api.ts"
-	}
+	},
+	"assets": [
+		"tools"
+	]
 }
