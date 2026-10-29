@@ -1,24 +1,54 @@
 # ToolPageAng15
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.0.
+Генератор Angular-страниц и компонентов (EVO).
 
-## Code scaffolding
+## Установка
 
-Run `ng generate component component-name --project tool-page-ang15` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project tool-page-ang15`.
-> Note: Don't forget to add `--project tool-page-ang15` or else it will be added to the default project in your `angular.json` file.
+```bash
+npm install tool-page-ang15
+```
 
-## Build
+## Настройка
 
-Run `ng build tool-page-ang15` to build the project. The build artifacts will be stored in the `dist/` directory.
+Добавьте в `package.json`:
 
-## Publishing
+```json
+"scripts": {
+  "evo": "node node_modules/tool-page-ang15/tools/evo-generator/index.js"
+}
+```
 
-After building your library with `ng build tool-page-ang15`, go to the dist folder `cd dist/tool-page-ang15` and run `npm publish`.
+## Команды
 
-## Running unit tests
+| Команда | Что создаёт |
+|---------|-------------|
+| `component-exchange` | Компонент на `ExchangeSubscribeComponent` |
+| `page-detail` | Страница + `devices/` (phone/tablet/desktop/common) |
+| `page-data` | Страница + `devices/` + `services/` (4 шт.) |
 
-Run `ng test tool-page-ang15` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Использование
 
-## Further help
+```bash
+npm run evo <команда> -- --name <имя> [--style <тип>] [--path <путь>]
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+| Параметр | Обязателен | По умолчанию |
+|----------|------------|--------------|
+| `--name` | да (kebab-case) | — |
+| `--style` | нет | `scss` |
+| `--path` | нет | текущая папка |
+
+## Примеры
+
+```bash
+# Компонент
+npm run evo component-exchange -- --name user-card
+
+# Страница детализации
+npm run evo page-detail -- --name user-profile --style less --path src/app/pages
+
+# Страница списка с сервисами
+npm run evo page-data -- --name users-list
+```
+
+> Все созданные компоненты автоматически регистрируются в ближайшем `*.module.ts`.
