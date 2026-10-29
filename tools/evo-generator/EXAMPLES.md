@@ -1,8 +1,20 @@
-# EVO Generator - Документация
+# ToolPageAng15
 
+Библиотека Angular 15 для генерации страниц и компонентов через EVO Generator.
+
+## Установка
+
+```bash
+npm install tool-page-ang15
 ```
+
+## Быстрый старт
+
+Добавьте скрипт в `package.json`:
+
+```json
 "scripts": {
-    evo": "node projects/evo-lib/tools/evo-generator/index.js"
+  "evo": "node node_modules/tool-page-ang15/tools/evo-generator/index.js"
 }
 ```
 
@@ -10,49 +22,36 @@
 
 | Команда | Описание |
 |---------|----------|
-| `component-exchange` | Компонент с NgExchangeSubscribeComponent |
-| `page-detail` | Страница детализации (с устройствами) |
-| `page-data` | Страница со списком данных + 5 сервисов |
+| `component-exchange` | Компонент с `ExchangeSubscribeComponent` |
+| `page-detail` | Страница детализации (phone/tablet/desktop) |
+| `page-data` | Страница списка + 4 сервиса (request/server/parsed/factory) |
 
 ## Параметры
 
-| Параметр | Обязательность | По умолчанию | Пример |
-|----------|----------------|--------------|--------|
-| `--name` | Да | - | `--name user-card` |
-| `--style` | Нет | `scss` | `--style less` |
-| `--path` | Нет | текущая папка | `--path features/admin` |
+| Параметр | По умолчанию | Пример |
+|----------|--------------|--------|
+| `--name` (обяз.) | — | `--name user-card` |
+| `--style` | `scss` | `--style less` |
+| `--path` | текущая папка | `--path src/app/features` |
 
-## Примеры использования разработчиком в режиме разработки
+## Примеры
 
----
+```bash
+# Компонент
+npx evo-generator component-exchange -- --name user-card
 
-### Базовое создание - component-exchange
-npm run evo component-exchange -- --name user-card
+# Страница детализации
+npx evo-generator page-detail -- --name user-profile --style scss --path src/app/pages
 
-#### С указанием стиля
-npm run evo component-exchange -- --name user-card --style less
+# Страница списка с сервисами
+npx evo-generator page-data -- --name users-list
+```
 
-#### В конкретной папке
-npm run evo component-exchange -- --name user-card --style scss --path components/shared
+> `page-data` создаёт: страницу, `devices/` (phone, tablet, desktop, common), `services/` (4 шт.) и регистрирует всё в модуле.
 
----
+## Разработка
 
-### Базовое создание - page-detail
-npm run evo page-detail -- --name user-profile
-
-#### С указанием стиля и пути
-npm run evo page-detail -- --name user-profile --style css --path pages/profile
-
----
-
-### Базовое создание (с 5 сервисами) - page-data
-npm run evo page-data -- --name users-list
-
-#### Полный вариант - page-data
-npm run evo page-data -- --name users-list --style scss --path features/admin
-
----
-
-## Примеры использования пользователем после становки библиотеки
-
-npx evo-generator page-data -- --name user-car --style scss --path src/app
+```bash
+ng build tool-page-ang15   # сборка в dist/
+ng test tool-page-ang15    # тесты
+```
