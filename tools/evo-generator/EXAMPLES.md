@@ -14,25 +14,25 @@ npm install tool-page-ang15
 
 ```json
 "scripts": {
-  "evo": "node node_modules/tool-page-ang15/tools/evo-generator/index.js"
+"evo": "node node_modules/tool-page-ang15/tools/evo-generator/index.js"
 }
 ```
 
 ## Команды
 
-| Команда | Описание |
-|---------|----------|
-| `component-exchange` | Компонент с `ExchangeSubscribeComponent` |
-| `page-detail` | Страница детализации (phone/tablet/desktop) |
-| `page-data` | Страница списка + 4 сервиса (request/server/parsed/factory) |
+| Команда         | Описание                                                    |
+|-----------------|-------------------------------------------------------------|
+| `page-exchange` | Компонент с `ExchangeSubscribeComponent`                    |
+| `page-detail`   | Страница детализации (phone/tablet/desktop)                 |
+| `page-data`     | Страница списка + 4 сервиса (request/server/parsed/factory) |
 
 ## Параметры
 
-| Параметр | По умолчанию | Пример |
-|----------|--------------|--------|
-| `--name` (обяз.) | — | `--name user-card` |
-| `--style` | `scss` | `--style less` |
-| `--path` | текущая папка | `--path src/app/features` |
+| Параметр         | По умолчанию  | Пример                    |
+|------------------|---------------|---------------------------|
+| `--name` (обяз.) | —             | `--name user-card`        |
+| `--style`        | `scss`        | `--style less`            |
+| `--path`         | текущая папка | `--path src/app/features` |
 
 ## Примеры
 

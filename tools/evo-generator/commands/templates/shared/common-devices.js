@@ -2,15 +2,15 @@
 
 // language=TEXT
 const getCommonDevicesTemplate = (componentName, className, useObservableScreen = false) => {
-    const screenInput = useObservableScreen
-        ? '@Input() screenInfo$!: Observable<IScreenInfo>;'
-        : '@Input() screenInfo!: IScreenInfo;';
+	const screenInput = useObservableScreen
+		? '@Input() screenInfo$!: Observable<IScreenInfo>;'
+		: '@Input() screenInfo!: IScreenInfo;';
 
-    const imports = useObservableScreen
-        ? 'import {Observable} from \'rxjs\';\n'
-        : '';
+	const imports = useObservableScreen
+		? 'import {Observable} from \'rxjs\';\n'
+		: '';
 
-    return `import { Component, Input, Inject, OnDestroy } from '@angular/core';
+	return `import { Component, Input, Inject, OnDestroy } from '@angular/core';
 ${imports}import { ExchangeSubscribeComponent, ExchangeLighthouse } from 'tool-exchange-ang15';
 ${imports}import { IScreenInfo, ScreenEnums, OrientationScreenEnum } from 'tool-screen-ang15';
 
@@ -54,5 +54,5 @@ export class ${className} extends ExchangeSubscribeComponent implements OnDestro
 };
 
 module.exports = {
-    getCommonDevicesTemplate
+	getCommonDevicesTemplate
 };

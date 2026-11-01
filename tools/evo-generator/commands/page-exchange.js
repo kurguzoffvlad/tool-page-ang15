@@ -1,4 +1,4 @@
-// commands/component-exchange.js
+// commands/page-exchange.js
 
 const path = require('path');
 const fs = require('fs');
@@ -39,7 +39,7 @@ export class ${className}Component extends ExchangeSubscribeComponent implements
 
     public ngOnInit(): void { }
 
-    public ngOnDestroy(): void {
+    public override ngOnDestroy(): void {
         super.ngOnDestroy();
     }
 }
@@ -64,7 +64,7 @@ const getStylesTemplate = () => `:host {
     overflow: hidden;
 }`;
 
-module.exports = async function(targetPath, scriptPath, options) {
+module.exports = async function (targetPath, scriptPath, options) {
 	const { name: componentName, style: styleType, path: customPath } = options;
 
 	try {

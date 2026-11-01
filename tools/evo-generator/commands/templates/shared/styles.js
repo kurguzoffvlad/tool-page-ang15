@@ -41,6 +41,6 @@ const getDeviceStylesTemplate = () => `:host {
 }`;
 
 module.exports = {
-    getMainStylesTemplate,
-    getDeviceStylesTemplate
+	getMainStylesTemplate,
+	getDeviceStylesTemplate
 };

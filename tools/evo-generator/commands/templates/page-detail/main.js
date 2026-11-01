@@ -56,6 +56,6 @@ const getMainHtmlTemplate = (componentName) => `<ng-container *ngIf="screen.stat
 </ng-container>`;
 
 module.exports = {
-    getMainTemplate,
-    getMainHtmlTemplate
+	getMainTemplate,
+	getMainHtmlTemplate
 };

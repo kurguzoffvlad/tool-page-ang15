@@ -17,26 +17,26 @@ export class ${className} extends ${parentClassName} {
 		public override exchange: ExchangeLighthouse,
 	) {
         super(
-			UserCardDesktopComponent.extendsClassName,
+			${className}.extendsClassName,
 			exchange
 		);
     }
 }
 `;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getDeviceHtmlTemplate = (deviceName) => `<div class="device"
     [ngClass]="{
-        'phone': screenInfo.screen.type === ScreenEnum.Phone,
-        'tablet': screenInfo.screen.type === ScreenEnum.Tablet,
-        'desktop': screenInfo.screen.type === ScreenEnum.Desktop
+        'phone': screenInfo.screen.type === ScreenEnums.Phone,
+        'tablet': screenInfo.screen.type === ScreenEnums.Tablet,
+        'desktop': screenInfo.screen.type === ScreenEnums.Desktop
     }"
 >
     <div [ngClass]="{
         'vertical': screenInfo.screen.orientation === OrientationScreenEnum.Vertical,
         'horizontal': screenInfo.screen.orientation === OrientationScreenEnum.Horizontal
     }">
-                <h1>EVO AI :)</h1>
-        <p>${deviceName} device works! Страница - {{ (evo.dynamicWidth.maxPageWidth.lighthouse$ | async)?.maxPageWidth }}</p>
+                <h1>AI :)</h1>
         <p>Смартфон - {{screenInfo.devices.phoneMaxSize}}</p>
         <p>Планшет - {{screenInfo.devices.tabletMaxSize}}</p>
         <p>Монитор - {{screenInfo.devices.desktopMaxSize}}</p>
@@ -46,6 +46,6 @@ const getDeviceHtmlTemplate = (deviceName) => `<div class="device"
 </div>`;
 
 module.exports = {
-    getDeviceTemplate,
-    getDeviceHtmlTemplate
+	getDeviceTemplate,
+	getDeviceHtmlTemplate
 };

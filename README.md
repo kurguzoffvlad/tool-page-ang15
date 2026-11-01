@@ -14,17 +14,17 @@ npm install tool-page-ang15
 
 ```json
 "scripts": {
-  "evo": "node node_modules/tool-page-ang15/tools/evo-generator/index.js"
+"evo": "node node_modules/tool-page-ang15/tools/evo-generator/index.js"
 }
 ```
 
 ## Команды
 
-| Команда | Что создаёт |
-|---------|-------------|
-| `component-exchange` | Компонент на `ExchangeSubscribeComponent` |
-| `page-detail` | Страница + `devices/` (phone/tablet/desktop/common) |
-| `page-data` | Страница + `devices/` + `services/` (4 шт.) |
+| Команда         | Что создаёт                                         |
+|-----------------|-----------------------------------------------------|
+| `page-exchange` | Компонент на `ExchangeSubscribeComponent`           |
+| `page-detail`   | Страница + `devices/` (phone/tablet/desktop/common) |
+| `page-data`     | Страница + `devices/` + `services/` (4 шт.)         |
 
 ## Использование
 
@@ -32,17 +32,17 @@ npm install tool-page-ang15
 npm run evo <команда> -- --name <имя> [--style <тип>] [--path <путь>]
 ```
 
-| Параметр | Обязателен | По умолчанию |
-|----------|------------|--------------|
-| `--name` | да (kebab-case) | — |
-| `--style` | нет | `scss` |
-| `--path` | нет | текущая папка |
+| Параметр  | Обязателен      | По умолчанию  |
+|-----------|-----------------|---------------|
+| `--name`  | да (kebab-case) | —             |
+| `--style` | нет             | `scss`        |
+| `--path`  | нет             | текущая папка |
 
 ## Примеры
 
 ```bash
 # Компонент
-npm run evo component-exchange -- --name user-card
+npm run evo page-exchange -- --name user-card
 
 # Страница детализации
 npm run evo page-detail -- --name user-profile --style less --path src/app/pages

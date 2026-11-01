@@ -14,18 +14,21 @@ async function main() {
 	console.log(`📂 Целевая директория: ${targetPath}\n`);
 
 	switch (command) {
-		case 'component-exchange':
-			const componentExchange = require('./commands/component-exchange');
+		case 'page-exchange': {
+			const componentExchange = require('./commands/page-exchange');
 			await componentExchange(targetPath, scriptPath, options);
 			break;
-		case 'page-detail':
+		}
+		case 'page-detail': {
 			const pageDetail = require('./commands/page-detail');
 			await pageDetail(targetPath, scriptPath, options);
 			break;
-		case 'page-data':
+		}
+		case 'page-data': {
 			const pageData = require('./commands/page-data');
 			await pageData(targetPath, scriptPath, options);
 			break;
+		}
 		default:
 			console.log(`Неизвестная команда: ${command}`);
 	}

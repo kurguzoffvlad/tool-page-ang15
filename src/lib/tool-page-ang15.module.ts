@@ -7,7 +7,7 @@ import { CommonModule } from "@angular/common";
 	declarations: [
 		ToolPageAng15Component
 	],
-	imports: [CommonModule],
+	imports: [ CommonModule ],
 	exports: [
 		ToolPageAng15Component
 	]

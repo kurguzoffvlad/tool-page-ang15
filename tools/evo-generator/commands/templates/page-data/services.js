@@ -2,13 +2,11 @@
 
 const getRequestServiceTemplate = (className) => `import { Injectable } from '@angular/core';
 
-import { IParams } from '../../service/interface/params.interface';
-
 @Injectable({
     providedIn: 'root'
 })
 export class ${className} {
-    public start(): IParams {
+    public start() {
         return { search: { search: [] }, size: 200 };
     }
 }
@@ -16,19 +14,14 @@ export class ${className} {
 
 const getServerServiceTemplate = (className) => `import { Injectable } from '@angular/core';
 
-import { RestService } from '../../service/rest.service';
-import { IParams } from '../../service/interface/params.interface';
-
 @Injectable({
     providedIn: 'root'
 })
 export class ${className} {
-    public constructor(
-        public rest: RestService,
-    ) {}
+    public constructor() {}
 
-    public async start(params: IParams): Promise<any> {
-        return await evo.awaitTryCatch.send(this.rest.search('catalogueRegions', params), 'AppComponent');
+    public async start(): Promise<any> {
+        return await {};
     }
 }
 `;
@@ -67,8 +60,8 @@ export class ${className} {
 
 
 module.exports = {
-    getRequestServiceTemplate,
-    getServerServiceTemplate,
-    getParsedServiceTemplate,
-    getFactoryServiceTemplate
+	getRequestServiceTemplate,
+	getServerServiceTemplate,
+	getParsedServiceTemplate,
+	getFactoryServiceTemplate
 };

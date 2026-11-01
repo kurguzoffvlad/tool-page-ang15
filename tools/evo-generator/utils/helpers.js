@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const {execSync} = require('child_process');
+const { execSync } = require('child_process');
 
 function toPascalCase(text) {
 	if (!text) return '';
@@ -20,7 +20,7 @@ function toCamelCase(text) {
 
 function ensureDirectory(dirPath) {
 	if (!fs.existsSync(dirPath)) {
-		fs.mkdirSync(dirPath, {recursive: true});
+		fs.mkdirSync(dirPath, { recursive: true });
 		return true;
 	}
 	return false;
@@ -47,7 +47,7 @@ function deleteFile(filePath) {
 
 function deleteFolder(folderPath) {
 	if (fs.existsSync(folderPath)) {
-		fs.rmSync(folderPath, {recursive: true, force: true});
+		fs.rmSync(folderPath, { recursive: true, force: true });
 		return true;
 	}
 	return false;
@@ -62,6 +62,7 @@ function findWorkspaceRoot(startDir) {
 	return null;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function detectProject(root, targetPath) {
 	const rel = path.relative(root, targetPath).replace(/\\/g, '/');
 	const m = rel.match(/^projects\/([^/]+)/);
@@ -121,6 +122,7 @@ function findNgModule(startPath) {
 				return path.join(currentPath, fallbackModule);
 			}
 
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (err) {
 			// игнорируем ошибки доступа
 		}

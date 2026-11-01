@@ -22,7 +22,7 @@ export class ${className}Component extends ExchangeSubscribeComponent implements
     @Input() filters: any;
     @Input() options: any;
 
-    public ScreenEnum = ScreenEnums;
+    public ScreenEnums = ScreenEnums;
 
     public constructor(
         public requestService: ${componentPascal}1RequestService,
@@ -39,7 +39,7 @@ export class ${className}Component extends ExchangeSubscribeComponent implements
     public ngOnInit(): void {
     }
 
-    public ngOnDestroy(): void {
+    public override ngOnDestroy(): void {
         super.ngOnDestroy();
     }
 }
@@ -52,7 +52,6 @@ const getMainHtmlTemplate = (componentName) => `<ng-container *ngIf="screen.stat
             [viewDataPage]="viewDataPage"
             [filters]="filters"
             [options]="options"
-            (click)="newPage()"
         ></exch-${componentName}-phone>
     </ng-container>
 
@@ -62,7 +61,6 @@ const getMainHtmlTemplate = (componentName) => `<ng-container *ngIf="screen.stat
             [viewDataPage]="viewDataPage"
             [filters]="filters"
             [options]="options"
-            (click)="newPage()"
         ></exch-${componentName}-tablet>
     </ng-container>
 
@@ -72,7 +70,6 @@ const getMainHtmlTemplate = (componentName) => `<ng-container *ngIf="screen.stat
             [viewDataPage]="viewDataPage"
             [filters]="filters"
             [options]="options"
-            (click)="newPage()"
         ></exch-${componentName}-desktop>
     </ng-container>
 </ng-container>`;
