@@ -1,19 +1,19 @@
 // commands/templates/page-data/main.js
 
-const getMainTemplate = (componentName, styleType, className, componentPascal) => `import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
+const getMainTemplate = (componentName, styleType, className) => `import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
-import {ExchangeSubscribeComponent, ExchangeLighthouse} from 'tool-exchange-ang15';
-import {ToolScreenService, ScreenEnums} from 'tool-screen-ang15';
+import { ExchangeSubscribeComponent, ExchangeLighthouse } from 'tool-exchange-ang15';
+import { ToolScreenService, ScreenEnums } from 'tool-screen-ang15';
 
-import { ${componentPascal}1RequestService } from './services/${componentName}-1-request.service';
-import { ${componentPascal}2ServerService } from './services/${componentName}-2-server.service';
-import { ${componentPascal}3ParsedService } from './services/${componentName}-3-parsed.service';
-import { ${componentPascal}4FactoryService } from './services/${componentName}-4-factory.service';
+import { ${className}1RequestService } from './services/${componentName}-1-request.service';
+import { ${className}2ServerService } from './services/${componentName}-2-server.service';
+import { ${className}3ParsedService } from './services/${componentName}-3-parsed.service';
+import { ${className}4FactoryService } from './services/${componentName}-4-factory.service';
 
 @Component({
     selector: 'exch-${componentName}',
     templateUrl: './${componentName}.component.html',
-    styleUrls: ['./${componentName}.component.${styleType}']
+    styleUrls: [ './${componentName}.component.${styleType}' ]
 })
 export class ${className}Component extends ExchangeSubscribeComponent implements OnInit, OnDestroy {
     static readonly extendsClassName = '${className}Component';
@@ -25,10 +25,10 @@ export class ${className}Component extends ExchangeSubscribeComponent implements
     public ScreenEnums = ScreenEnums;
 
     public constructor(
-        public requestService: ${componentPascal}1RequestService,
-        public serverService: ${componentPascal}2ServerService,
-        public parsedService: ${componentPascal}3ParsedService,
-        public factoryService: ${componentPascal}4FactoryService,
+        public requestService: ${className}1RequestService,
+        public serverService: ${className}2ServerService,
+        public parsedService: ${className}3ParsedService,
+        public factoryService: ${className}4FactoryService,
         public screen: ToolScreenService,
         public override exchange: ExchangeLighthouse
 

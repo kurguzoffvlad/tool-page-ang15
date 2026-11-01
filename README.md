@@ -1,6 +1,8 @@
 # ToolPageAng15
 
-Генератор Angular-страниц и компонентов (EVO).
+Генератор (разработка на NODE v20.19.5) - страниц и компонентов для ОБМЕНА МЕТОДАМИ И СВОЙСТВАМИ между компонентами.
+
+ОБМЕН МЕТОДАМИ И СВОЙСТВАМИ между компонентами происходит через ExchangeSubscribeComponent
 
 ## Установка
 
@@ -14,7 +16,7 @@ npm install tool-page-ang15
 
 ```json
 "scripts": {
-"evo": "node node_modules/tool-page-ang15/tools/evo-generator/index.js"
+	"create": "node node_modules/tool-page-ang15/tools/evo-generator/index.js"
 }
 ```
 
@@ -42,13 +44,18 @@ npm run evo <команда> -- --name <имя> [--style <тип>] [--path <пу
 
 ```bash
 # Компонент
-npm run evo page-exchange -- --name user-card
+npm run create page-exchange -- --name page-exchange1
 
 # Страница детализации
-npm run evo page-detail -- --name user-profile --style less --path src/app/pages
+npm run create page-detail -- --name page-detail1 --style less --path src/app/pages
 
 # Страница списка с сервисами
-npm run evo page-data -- --name users-list
+npm run create page-data -- --name page-data1
+```
+
+
+```bash
+ng build tool-page-ang15   # сборка в dist/
 ```
 
 > Все созданные компоненты автоматически регистрируются в ближайшем `*.module.ts`.

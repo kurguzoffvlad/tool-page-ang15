@@ -2,83 +2,64 @@
 
 const path = require('path');
 const fs = require('fs');
+
 const {
 	toPascalCase,
 	ensureDirectory,
 	writeFile,
-	generateComponentViaAngularCLI,
-	findNgModule,
-	updateNgModule,
+	safeGenerate,
 	logSuccess,
 	logError,
 	logInfo,
-	logWarning
+	logWarning,
 } = require('../utils/helpers');
-const { validateComponentName, validateStyleType } = require('../utils/validators');
+const {
+	validateComponentName,
+	validateStyleType,
+} = require('../utils/validators');
+const { findNgModule, updateNgModule } = require('../utils/ng-module');
 
-// Шаблон TypeScript
-const getTsTemplate = (componentName, styleType, className) => `
-import { Input, Component, OnInit, OnDestroy } from '@angular/core';
+// Специфичные шаблоны exchange-компонента (ts + html)
+const {
+	getTsTemplate,
+	getHtmlTemplate,
+} = require('./templates/page-exchange/main');
 
-import {ExchangeSubscribeComponent, ExchangeLighthouse} from 'tool-exchange-ang15';
+// Общий шаблон стилей — переиспользуем из shared/styles.js,
+// чтобы не держать третий дубль :host { ... }
+const { getMainStylesTemplate } = require('./templates/shared/styles');
 
-@Component({
-    selector: 'exch-${componentName}',
-    templateUrl: './${componentName}.component.html',
-    styleUrls: ['./${componentName}.component.${styleType}']
-})
-export class ${className}Component extends ExchangeSubscribeComponent implements OnInit, OnDestroy {
-    private static readonly extendsClassName = '${className}Component';
-
-    @Input() public viewDataFields: any = {};
-
-    public constructor(
-    	public override exchange: ExchangeLighthouse) {
-        super(${className}Component.extendsClassName, exchange);
-    }
-
-    public ngOnInit(): void { }
-
-    public override ngOnDestroy(): void {
-        super.ngOnDestroy();
-    }
-}
-`;
-
-// Шаблон HTML
-const getHtmlTemplate = (componentName) => `<div class="${componentName}-container">
-    <p>${componentName} works!</p>
-    <p>ExchangeSubscribeComponent - communication-center-for-components-and-services!!!</p>
-</div>`;
-
-// Шаблон стилей
-const getStylesTemplate = () => `:host {
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    box-sizing: border-box;
-    overflow: hidden;
-}`;
-
-module.exports = async function (targetPath, scriptPath, options) {
+/**
+ * Команда генерации exchange-компонента.
+ *
+ * Это «плоский» компонент (без devices/common-devices):
+ *   - наследует ExchangeSubscribeComponent из tool-exchange-ang15;
+ *   - получает viewDataFields через @Input;
+ *   - регистрируется в ближайшем NgModule.
+ *
+ * Отличия от page-data/page-detail:
+ *   - не использует buildDevicePage — структура совсем другая;
+ *   - стили берутся из shared/styles.js (getMainStylesTemplate),
+ *     а не дублируются локальной функцией.
+ *
+ * @param {string} targetPath  директория, откуда запустили генератор (INIT_CWD)
+ * @param {string} _scriptPath путь к самому генератору (не используется)
+ * @param {object} options     { name, style, path? }
+ */
+module.exports = async function (targetPath, _scriptPath, options) {
 	const { name: componentName, style: styleType, path: customPath } = options;
 
 	try {
-		// Валидация
+		// 1. Валидация — до любых файловых операций.
 		validateComponentName(componentName);
 		validateStyleType(styleType);
 
-		// Определяем родительскую папку (ng g сам создаст папку компонента внутри)
+		// 2. Куда генерировать: --path переопределяет targetPath.
 		const createPath = customPath || targetPath;
-
 		const componentFolder = path.join(createPath, componentName);
 		const componentFile = path.join(componentFolder, `${componentName}.component.ts`);
 
-		// Проверка на существование
+		// 3. Идемпотентность: если компонент уже есть — выходим без ошибки.
 		if (fs.existsSync(componentFile)) {
 			logWarning(`Компонент ${componentName} уже существует`);
 			return;
@@ -86,43 +67,42 @@ module.exports = async function (targetPath, scriptPath, options) {
 
 		logInfo(`Создание компонента: ${componentName}`);
 
-		// Гарантируем наличие родительской папки
+		// 4. Родительская папка должна существовать до ng CLI.
 		ensureDirectory(createPath);
 
-		// Генерируем через Angular CLI (без --flat, ng g создаст папку user-card/)
-		const success = generateComponentViaAngularCLI(componentName, createPath, styleType, false);
-
-		if (!success) {
+		// 5. Генерация через Angular CLI без --flat:
+		//    ng создаст подпапку componentName/ со своими файлами,
+		//    которые мы затем перезапишем нашими шаблонами.
+		if (!safeGenerate(componentName, createPath, styleType, /* flat */ false)) {
 			throw new Error('Не удалось создать компонент через Angular CLI');
 		}
 
-		// Перезаписываем файлы своими шаблонами
+		// 6. Перезапись сгенерированных файлов нашими шаблонами.
 		const className = toPascalCase(componentName);
 
-		// TypeScript файл
 		writeFile(componentFile, getTsTemplate(componentName, styleType, className));
-
-		// HTML файл
-		const htmlFile = path.join(componentFolder, `${componentName}.component.html`);
-		writeFile(htmlFile, getHtmlTemplate(componentName));
-
-		// Styles файл
-		const stylesFile = path.join(componentFolder, `${componentName}.component.${styleType}`);
-		writeFile(stylesFile, getStylesTemplate());
+		writeFile(
+			path.join(componentFolder, `${componentName}.component.html`),
+			getHtmlTemplate(componentName),
+		);
+		writeFile(
+			path.join(componentFolder, `${componentName}.component.${styleType}`),
+			getMainStylesTemplate(),
+		);
 
 		logSuccess(`Компонент ${componentName} создан`);
 
-		// Регистрация в модуле
+		// 7. Регистрация в ближайшем NgModule.
+		//    updateNgModule сам пропустит standalone-компоненты.
 		const modulePath = findNgModule(componentFolder);
 		if (modulePath) {
 			logInfo(`Регистрация в модуле: ${modulePath}`);
 			updateNgModule(componentFile, modulePath);
 		} else {
-			logWarning('Модуль не найден для регистрации компонента');
+			logWarning('Модуль не найден — пропускаем регистрацию');
 		}
-
-	} catch (error) {
-		logError(error.message);
-		throw error;
+	} catch (e) {
+		logError(e.message);
+		throw e;
 	}
 };

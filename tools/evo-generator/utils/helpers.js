@@ -1,9 +1,19 @@
-// evo-front-lib\projects\evo-lib\tools\evo-generator\utils\helpers.js
+// utils/helpers.js
 
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+/* ============================================================
+ * СТРОКОВЫЕ УТИЛИТЫ
+ * ============================================================ */
+
+/**
+ * kebab-case / snake_case → PascalCase
+ * 'user-profile' → 'UserProfile'
+ * 'user_profile' → 'UserProfile'
+ * ''             → ''
+ */
 function toPascalCase(text) {
 	if (!text) return '';
 	return text
@@ -12,12 +22,14 @@ function toPascalCase(text) {
 		.join('');
 }
 
-function toCamelCase(text) {
-	const pascal = toPascalCase(text);
-	if (!pascal) return '';
-	return pascal.charAt(0).toLowerCase() + pascal.slice(1);
-}
+/* ============================================================
+ * ФАЙЛОВАЯ СИСТЕМА
+ * ============================================================ */
 
+/**
+ * Создаёт директорию рекурсивно.
+ * @returns {boolean} true — если папка была создана, false — если уже существовала.
+ */
 function ensureDirectory(dirPath) {
 	if (!fs.existsSync(dirPath)) {
 		fs.mkdirSync(dirPath, { recursive: true });
@@ -26,10 +38,18 @@ function ensureDirectory(dirPath) {
 	return false;
 }
 
+/**
+ * Синхронно пишет файл в utf8.
+ * Не создаёт родительские папки — для этого есть ensureDirectory.
+ */
 function writeFile(filePath, content) {
 	fs.writeFileSync(filePath, content, 'utf8');
 }
 
+/**
+ * Читает файл, если он существует.
+ * @returns {string|null} содержимое или null, если файла нет.
+ */
 function readFile(filePath) {
 	if (fs.existsSync(filePath)) {
 		return fs.readFileSync(filePath, 'utf8');
@@ -37,6 +57,10 @@ function readFile(filePath) {
 	return null;
 }
 
+/**
+ * Удаляет файл, если он существует.
+ * @returns {boolean} true — если файл был удалён, false — если его не было.
+ */
 function deleteFile(filePath) {
 	if (fs.existsSync(filePath)) {
 		fs.unlinkSync(filePath);
@@ -45,6 +69,10 @@ function deleteFile(filePath) {
 	return false;
 }
 
+/**
+ * Удаляет папку рекурсивно (аналог rm -rf).
+ * @returns {boolean} true — если папка была удалена, false — если её не было.
+ */
 function deleteFolder(folderPath) {
 	if (fs.existsSync(folderPath)) {
 		fs.rmSync(folderPath, { recursive: true, force: true });
@@ -53,6 +81,14 @@ function deleteFolder(folderPath) {
 	return false;
 }
 
+/* ============================================================
+ * ANGULAR CLI ИНТЕГРАЦИЯ
+ * ============================================================ */
+
+/**
+ * Поднимается по дереву каталогов вверх, пока не найдёт angular.json.
+ * @returns {string|null} путь к корню воркспейса или null.
+ */
 function findWorkspaceRoot(startDir) {
 	let dir = startDir;
 	while (dir !== path.parse(dir).root) {
@@ -62,29 +98,55 @@ function findWorkspaceRoot(startDir) {
 	return null;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function detectProject(root, targetPath) {
-	const rel = path.relative(root, targetPath).replace(/\\/g, '/');
-	const m = rel.match(/^projects\/([^/]+)/);
-	if (m) return m[1];
+/**
+ * Определяет имя Angular-проекта по пути и angular.json.
+ * Логика: ищем проект, чей root включает parentDir; иначе defaultProject; иначе первый.
+ * @returns {string} имя проекта.
+ */
+function detectProject(root, parentDir) {
 	const cfg = JSON.parse(fs.readFileSync(path.join(root, 'angular.json'), 'utf8'));
-	return cfg.defaultProject || Object.keys(cfg.projects)[0];
+	const projects = cfg.projects || {};
+
+	const found = Object.keys(projects).find(p => {
+		const projectRoot = path.join(root, projects[p].root || p);
+		return parentDir === projectRoot || parentDir.startsWith(projectRoot + path.sep);
+	});
+
+	return found || cfg.defaultProject || Object.keys(projects)[0];
 }
 
+/**
+ * Запускает `ng g component` из корня воркспейса.
+ *
+ * @param {string}  componentName  имя компонента (kebab-case)
+ * @param {string}  parentDir      родительская папка, куда генерируем
+ * @param {string}  style          стиль: css | scss | sass | less | styl
+ * @param {boolean} flat           true — создаёт файлы рядом (без папки), false — в подпапке
+ * @returns {boolean} успех операции.
+ */
 function generateComponentViaAngularCLI(componentName, parentDir, style, flat = false) {
 	const root = findWorkspaceRoot(parentDir);
-	if (!root) return false;
+	if (!root) {
+		console.error('  Не найден angular.json — пропускаем генерацию через CLI');
+		return false;
+	}
 
-	const cfg = JSON.parse(fs.readFileSync(path.join(root, 'angular.json'), 'utf8'));
-	// Ищем проект (shell)
-	const project = Object.keys(cfg.projects).find(p => parentDir.includes(cfg.projects[p].root || p)) || cfg.defaultProject || Object.keys(cfg.projects)[0];
-
+	const project = detectProject(root, parentDir);
 	const relPath = path.relative(root, parentDir).replace(/\\/g, '/');
 	const flatFlag = flat ? '--flat' : '';
-	const cmd = `ng g component ${componentName} --project=${project} --path=${relPath} --skip-tests=true --style=${style} ${flatFlag} --skip-import`;
+
+	// --skip-import: не добавляем в модуль автоматически — делаем это сами
+	const cmd = [
+		'ng g component', componentName,
+		`--project=${project}`,
+		`--path=${relPath}`,
+		'--skip-tests=true',
+		`--style=${style}`,
+		flatFlag,
+		'--skip-import',
+	].filter(Boolean).join(' ');
 
 	try {
-		// Запускаем из корня!
 		execSync(cmd, { stdio: 'pipe', cwd: root });
 		return true;
 	} catch (e) {
@@ -93,130 +155,51 @@ function generateComponentViaAngularCLI(componentName, parentDir, style, flat = 
 	}
 }
 
-function findNgModule(startPath) {
-	let currentPath = startPath;
-	let depth = 0;
-	const maxDepth = 10;
-
-	while (depth < maxDepth && currentPath && currentPath !== path.parse(currentPath).root) {
-		try {
-			const files = fs.readdirSync(currentPath);
-
-			// 1. Сначала ищем основной модуль (page.module.ts)
-			// Исключаем роутинг (page-routing.module.ts)
-			const moduleFile = files.find(f =>
-				f.endsWith('.module.ts') &&
-				!f.includes('-routing') &&
-				!f.includes('.spec')
-			);
-
-			if (moduleFile) {
-				console.log(`  Найден модуль: ${path.join(currentPath, moduleFile)}`);
-				return path.join(currentPath, moduleFile);
-			}
-
-			// 2. Если основного нет, ищем любой другой (кроме роутинга)
-			const fallbackModule = files.find(f => f.endsWith('.module.ts') && !f.includes('-routing'));
-			if (fallbackModule) {
-				console.log(`  Найден fallback-модуль: ${path.join(currentPath, fallbackModule)}`);
-				return path.join(currentPath, fallbackModule);
-			}
-
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (err) {
-			// игнорируем ошибки доступа
-		}
-
-		const parentPath = path.dirname(currentPath);
-		if (parentPath === currentPath) break;
-		currentPath = parentPath;
-		depth++;
-	}
-
-	console.log(`  Модуль не найден, начиная с: ${startPath}`);
-	return null;
+/**
+ * Безопасная обёртка над generateComponentViaAngularCLI.
+ * В отличие от CLI, НЕ создаёт «пустых» папок при провале — возвращает null.
+ *
+ * @returns {string|null} путь к папке компонента (или к parentDir при flat) либо null.
+ */
+function safeGenerate(componentName, parentDir, style, flat = false) {
+	const ok = generateComponentViaAngularCLI(componentName, parentDir, style, flat);
+	if (!ok) return null;
+	return flat ? parentDir : path.join(parentDir, componentName);
 }
 
-function updateNgModule(componentPath, modulePath) {
-	if (!modulePath || !fs.existsSync(modulePath)) {
-		return false;
-	}
+/* ============================================================
+ * ЛОГИРОВАНИЕ
+ * ============================================================ */
 
-	// Получаем имя класса из файла компонента
-	const componentContent = readFile(componentPath);
-	const classNameMatch = componentContent.match(/export class (\w+)/);
-	if (!classNameMatch) return false;
+const logSuccess = (msg) => console.log(`✅ ${msg}`);
+const logError   = (msg) => console.error(`❌ ${msg}`);
+const logInfo    = (msg) => console.log(`📌 ${msg}`);
+const logWarning = (msg) => console.log(`⚠️ ${msg}`);
 
-	const className = classNameMatch[1];
-
-	let moduleContent = readFile(modulePath);
-	if (moduleContent.includes(className)) return false;
-
-	// Вычисляем относительный путь для импорта
-	const moduleDir = path.dirname(modulePath);
-	let relativePath = path.relative(moduleDir, componentPath);
-	relativePath = relativePath.replace(/\\/g, '/').replace(/\.ts$/, '');
-	if (!relativePath.startsWith('.')) {
-		relativePath = './' + relativePath;
-	}
-
-	const newImport = `import { ${className} } from '${relativePath}';`;
-
-	// Добавляем импорт после последнего import
-	const importRegex = /(import .*;\s*)+/;
-	const importMatch = moduleContent.match(importRegex);
-	if (importMatch) {
-		const lastImportIndex = importMatch[0].lastIndexOf(';');
-		moduleContent = moduleContent.slice(0, lastImportIndex + 1) +
-			'\n' + newImport +
-			moduleContent.slice(lastImportIndex + 1);
-	}
-
-	// Добавляем в declarations
-	const declarationsRegex = /declarations:\s*\[([^\]]*)\]/;
-	const declarationsMatch = moduleContent.match(declarationsRegex);
-	if (declarationsMatch && !declarationsMatch[1].includes(className)) {
-		const declarations = declarationsMatch[1].trim();
-		const newDeclarations = declarations ?
-			`${declarations},\n    ${className}` :
-			`    ${className}`;
-		moduleContent = moduleContent.replace(declarationsRegex, `declarations: [${newDeclarations}]`);
-	}
-
-	writeFile(modulePath, moduleContent);
-	console.log(`  ✓ Модуль обновлен: ${modulePath}`);
-	return true;
-}
-
-function logSuccess(message) {
-	console.log(`✅ ${message}`);
-}
-
-function logError(message) {
-	console.error(`❌ ${message}`);
-}
-
-function logInfo(message) {
-	console.log(`📌 ${message}`);
-}
-
-function logWarning(message) {
-	console.log(`⚠️ ${message}`);
-}
+/* ============================================================
+ * ЭКСПОРТ
+ * ============================================================ */
 
 module.exports = {
+	// строки
 	toPascalCase,
-	toCamelCase,
+
+	// FS
 	ensureDirectory,
 	writeFile,
 	readFile,
 	deleteFile,
 	deleteFolder,
+
+	// Angular CLI
+	findWorkspaceRoot,
+	detectProject,
 	generateComponentViaAngularCLI,
-	findNgModule,
-	updateNgModule,
+	safeGenerate,
+
+	// логи
 	logSuccess,
 	logError,
 	logInfo,
-	logWarning
+	logWarning,
 };

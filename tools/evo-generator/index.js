@@ -36,16 +36,13 @@ async function main() {
 
 function parseArgs(args) {
 	const options = { style: 'scss' };
+	const flags = { '--name': 'name', '--style': 'style', '--path': 'path' };
 	for (let i = 0; i < args.length; i++) {
-		if (args[i] === '--name') options.name = args[++i];
-		if (args[i] === '--style') options.style = args[++i];
-		if (args[i] === '--path') options.path = args[++i];
+		const key = flags[args[i]];
+		if (!key) { console.warn(`⚠️ Неизвестный флаг: ${args[i]}`); continue; }
+		options[key] = args[++i];
 	}
-
-	// Если путь передан - делаем его абсолютным относительно INIT_CWD
-	if (options.path) {
-		options.path = path.resolve(targetPath, options.path);
-	}
+	if (options.path) options.path = path.resolve(targetPath, options.path);
 	return options;
 }
 
