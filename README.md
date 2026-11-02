@@ -4,34 +4,12 @@
 
 ОБМЕН МЕТОДАМИ И СВОЙСТВАМИ между компонентами происходит через ExchangeLighthouse и ExchangeSubscribeComponent.
 
-## Установка
+ExchangeLighthouse - отправляет информацию - что нужно сделать
+
+ExchangeSubscribeComponent - изменяет свойство или запускает метод текущего компонента.
 
 ```bash
-npm install tool-page-ang15
-```
-
-## Настройка
-
-Добавьте в `package.json`:
-
-```json
-"scripts": {
-	"create": "node node_modules/tool-page-ang15/tools/tool-generator/index.js"
-}
-```
-
-## Команды
-
-| Команда         | Что создаёт                                         |
-|-----------------|-----------------------------------------------------|
-| `page-exchange` | Компонент на `ExchangeSubscribeComponent`           |
-| `page-detail`   | Страница + `devices/` (phone/tablet/desktop/common) |
-| `page-data`     | Страница + `devices/` + `services/` (4 шт.)         |
-
-## Использование
-
-```bash
-npm run evo <команда> -- --name <имя> [--style <тип>] [--path <путь>]
+npm run create <команда> -- --name <имя> [--style <тип>] [--path <путь>]
 ```
 
 | Параметр  | Обязателен      | По умолчанию  |
@@ -42,17 +20,22 @@ npm run evo <команда> -- --name <имя> [--style <тип>] [--path <пу
 
 ## Примеры
 
+### 1. в начале в терминале нужно указать путь где нужно создать PAGE
+
 ```bash
-# Компонент
+# 1.1. Компонент
 npm run create page-exchange -- --name page-exchange1
-
-# Страница детализации
-npm run create page-detail -- --name page-detail1 --style less --path src/app/pages
-
-# Страница списка с сервисами
-npm run create page-data -- --name page-data1
 ```
 
+```bash
+# 1.2. Страница детализации
+npm run create page-detail -- --name page-detail1 --style less --path src/app/pages
+```
+
+```bash
+# 1.3. Страница списка с сервисами
+npm run create page-data -- --name page-data1
+```
 
 ```bash
 ng build tool-page-ang15   # сборка в dist/
