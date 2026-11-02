@@ -2,7 +2,7 @@
 
 Генератор (разработка на NODE v20.19.5) - страниц и компонентов для ОБМЕНА МЕТОДАМИ И СВОЙСТВАМИ между компонентами.
 
-ОБМЕН МЕТОДАМИ И СВОЙСТВАМИ между компонентами происходит через ExchangeSubscribeComponent
+ОБМЕН МЕТОДАМИ И СВОЙСТВАМИ между компонентами происходит через ExchangeLighthouse и ExchangeSubscribeComponent.
 
 ## Установка
 
@@ -16,7 +16,7 @@ npm install tool-page-ang15
 
 ```json
 "scripts": {
-	"create": "node node_modules/tool-page-ang15/tools/evo-generator/index.js"
+	"create": "node node_modules/tool-page-ang15/tools/tool-generator/index.js"
 }
 ```
 

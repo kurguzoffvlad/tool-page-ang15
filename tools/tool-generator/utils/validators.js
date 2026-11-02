@@ -1,4 +1,4 @@
-// evo-front-lib\projects\evo-lib\tools\evo-generator\utils\validators.js
+// evo-front-lib\projects\evo-lib\tools\tool-generator\utils\validators.js
 
 const VALID_STYLES = ['css', 'scss', 'sass', 'less', 'styl'];
 

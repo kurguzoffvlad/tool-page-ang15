@@ -1,28 +1,4 @@
-// commands/templates/page-detail/main.js
-
-const getMainTemplate = (componentName, styleType, className) => `import { Component, Input, OnDestroy } from '@angular/core';
-
-import { ToolScreenService, ScreenEnums } from 'tool-screen-ang15';
-
-@Component({
-    selector: 'exch-${componentName}',
-    templateUrl: './${componentName}.component.html',
-    styleUrls: [ './${componentName}.component.${styleType}' ]
-})
-
-export class ${className}Component implements OnDestroy {
-    @Input() viewDataPage: any = {};
-    @Input() filters: any;
-    @Input() options: any;
-
-    public ScreenEnums = ScreenEnums;
-
-    public constructor(public screen: ToolScreenService) {}
-
-    public ngOnDestroy(): void {
-    }
-}
-`;
+// noinspection AngularMissingRequiredDirectiveInputBinding
 
 const getMainHtmlTemplate = (componentName) => `<ng-container *ngIf="screen.state$ | async as info">
     <ng-container *ngIf="info.screen.type === ScreenEnums.Phone">
@@ -54,6 +30,5 @@ const getMainHtmlTemplate = (componentName) => `<ng-container *ngIf="screen.stat
 </ng-container>`;
 
 module.exports = {
-	getMainTemplate,
 	getMainHtmlTemplate
 };

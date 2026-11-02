@@ -34,10 +34,10 @@ const {
  *   request → server → parsed → factory.
  */
 const SERVICES = [
-	{ key: '1-request', getter: getRequestServiceTemplate },
-	{ key: '2-server',  getter: getServerServiceTemplate  },
-	{ key: '3-parsed',  getter: getParsedServiceTemplate  },
-	{ key: '4-factory', getter: getFactoryServiceTemplate },
+	{ key: '1-request', getter: getRequestServiceTemplate, needsComponent: true },
+	{ key: '2-server',  getter: getServerServiceTemplate, needsComponent: true },
+	{ key: '3-parsed',  getter: getParsedServiceTemplate, needsComponent: true },
+	{ key: '4-factory', getter: getFactoryServiceTemplate, needsComponent: true },
 ];
 
 /* ============================================================
@@ -61,19 +61,20 @@ function createServices(servicesPath, componentName) {
 	const created = [];
 	const pascal = toPascalCase(componentName);
 
-	for (const { key, getter } of SERVICES) {
+	for (const { key, getter, needsComponent } of SERVICES) {
 		const fileName = `${componentName}-${key}.service.ts`;
 		const filePath = path.join(servicesPath, fileName);
 		const className = `${pascal}${toPascalCase(key)}Service`;
 
-		// Идемпотентность: не перезаписываем существующий файл — там могут
-		// быть ручные правки разработчика.
 		if (fs.existsSync(filePath)) {
 			logWarning(`  Сервис ${key} уже существует`);
 			continue;
 		}
 
-		writeFile(filePath, getter(className));
+		writeFile(filePath, needsComponent
+			? getter(componentName, className)
+			: getter(className));
+
 		created.push(filePath);
 		logSuccess(`  Сервис ${key} создан`);
 	}

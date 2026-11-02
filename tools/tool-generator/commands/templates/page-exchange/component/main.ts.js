@@ -1,4 +1,3 @@
-// commands/templates/page-exchange/main.js
 
 /**
  * Шаблоны для exchange-компонента (page-exchange).
@@ -50,27 +49,6 @@ export class ${className}Component extends ExchangeSubscribeComponent implements
 }
 `;
 
-/* ============================================================
- * HTML
- * ============================================================ */
-
-/**
- * Генерирует .component.html.
- *
- * @param {string} componentName  kebab-case имя компонента — используется в CSS-классе
- *                                контейнера (например, 'user-card-container')
- * @returns {string} готовый HTML
- */
-const getHtmlTemplate = (componentName) => `<div class="${componentName}-container">
-    <p>${componentName} works!</p>
-    <p>ExchangeSubscribeComponent - communication-center-for-components-and-services!!!</p>
-</div>`;
-
-/* ============================================================
- * ЭКСПОРТ
- * ============================================================ */
-
 module.exports = {
 	getTsTemplate,
-	getHtmlTemplate,
 };

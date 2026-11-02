@@ -219,7 +219,9 @@ async function buildDevicePage(opts) {
 	// 2. Сервисы (только для page-data)
 	if (createServices) {
 		ensureDirectory(servicesPath);
-		componentFiles.push(...createServices(servicesPath, componentName));
+		// ВАЖНО: сервисы не регистрируем в NgModule — они providedIn: 'root'.
+		// Поэтому результат createServices НЕ пушим в componentFiles.
+		createServices(servicesPath, componentName);
 	}
 
 	// 3. Папка devices
