@@ -45,18 +45,26 @@ ng build tool-page-ang15   # сборка в dist/
 
 ### package.json
 
-```
+```jsonc
 {
 	"dependencies": {
 		"@angular/common": "^15.2.0",
 		"@angular/core": "^15.2.0",
+		"tslib": "^2.3.0"
+		// ⬇️ эти пакеты — для разработки
 		"tool-exchange-ang15": "^x.y.z",
 		"tool-screen-ang15": "^x.y.z",
-		"tslib": "^2.3.0"
 	},
+```
+
+```jsonc
 	"devDependencies": {
+		// ⬇️ вот этот пакет — только для разработки
 		"tool-page-ang15": "^0.0.23"
-	},
+	}
+```
+
+```jsonc
 	"scripts": {
 		"create": "node node_modules/tool-page-ang15/tools/index.js"
 	}
