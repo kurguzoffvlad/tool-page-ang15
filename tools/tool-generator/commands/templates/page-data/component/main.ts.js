@@ -1,7 +1,6 @@
 const getMainTemplate = (componentName, styleType, className) => `import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
-import { of, Subject } from 'rxjs';
-import { map, catchError, takeUntil } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 
 import { ExchangeSubscribeComponent, ExchangeLighthouse } from 'tool-exchange-ang15';
 import { ToolScreenService, ScreenEnums } from 'tool-screen-ang15';
@@ -29,8 +28,6 @@ export class ${className}Component extends ExchangeSubscribeComponent implements
 	public isLoading: boolean = false;
 	public errorMessage: string | null = null;
 
-	private readonly destroyedData$ = new Subject();
-
     public constructor(
         public requestService: ${className}1RequestService,
         public serverService: ${className}2ServerService,
@@ -44,46 +41,35 @@ export class ${className}Component extends ExchangeSubscribeComponent implements
     }
 
     public ngOnInit(): void {
+    	this.loadData().then();
     }
 
-    public loadData(): void {
+    public loadData(): Promise<> { // !!! в <> - добавить void
 		this.isLoading = true;
 		this.errorMessage = null;
 
-		// 1. Request
-		const config = this.requestService.start();
+		try {
+			const config = this.requestService.start();
 
-		// 2. Server (выполнение HTTP-запроса)
-		this.serverService.start(config)
-			.pipe(
-				// Отписка при уничтожении компонента
-				takeUntil(this.destroyedData$),
+			const serverResult = await firstValueFrom( this.serverService.start(config) );
 
-				// 3. Parsed
-				map((serverResult) => this.parsedService.start(serverResult)),
+			const parsedResult = this.parsedService.start(serverResult);
 
-				// 4. Factory
-				map((parsedResult) => this.factoryService.start(parsedResult)),
+			const items = this.factoryService.start(parsedResult);
 
-				// Обработка ошибок
-				catchError((error) => {
-					console.error('Ошибка получения данных:', error);
-					this.errorMessage = 'Не удалось загрузить данные с сервера';
-					this.isLoading = false;
-					return of([]); // Возвращаем пустой массив
-			})
-		).subscribe({
-			next: (items) => { this.dataItems = items; },
-			error: () => {}, // Уже обработан в catchError
-			complete: () => { this.isLoading = false; }
-		});
+			this.dataItems = items;
+		} catch (error) {
+			console.error('Ошибка получения данных:', error);
+			this.errorMessage = 'Не удалось загрузить данные с сервера';
+			this.dataItems = [];
+		} finally {
+			this.isLoading = false;
+		}
+	}
 	}
 
     public override ngOnDestroy(): void {
         super.ngOnDestroy();
-
-        this.destroyedData$.next(undefined);
-		this.destroyedData$.complete();
     }
 }
 `;

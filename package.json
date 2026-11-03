@@ -1,6 +1,6 @@
 {
 	"name": "tool-page-ang15",
-	"version": "0.0.18",
+	"version": "0.0.20",
 	"description": "Библиотека для работы разработчика с Angular 15",
 	"author": "Vladimir Kurguzov <kurguzov74@gmail.com>",
 	"license": "MIT",
