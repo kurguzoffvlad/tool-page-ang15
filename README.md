@@ -42,3 +42,23 @@ ng build tool-page-ang15   # сборка в dist/
 ```
 
 > Все созданные компоненты автоматически регистрируются в ближайшем `*.module.ts`.
+
+### package.json
+
+```
+{
+	"dependencies": {
+		"@angular/common": "^15.2.0",
+		"@angular/core": "^15.2.0",
+		"tool-exchange-ang15": "^x.y.z",
+		"tool-screen-ang15": "^x.y.z",
+		"tslib": "^2.3.0"
+	},
+	"devDependencies": {
+		"tool-page-ang15": "^0.0.23"
+	},
+	"scripts": {
+		"create": "node node_modules/tool-page-ang15/tools/index.js"
+	}
+}
+```
