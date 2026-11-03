@@ -66,7 +66,6 @@ export class ${className}Component extends ExchangeSubscribeComponent implements
 			this.isLoading = false;
 		}
 	}
-	}
 
     public override ngOnDestroy(): void {
         super.ngOnDestroy();
