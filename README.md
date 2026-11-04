@@ -9,7 +9,7 @@ ExchangeLighthouse - отправляет информацию - что нужн
 ExchangeSubscribeComponent - изменяет свойство или запускает метод текущего компонента.
 
 ```bash
-npm run create <команда> -- --name <имя> [--style <тип>] [--path <путь>]
+npm run CREATE:page <команда> -- --name <имя> [--style <тип>] [--path <путь>]
 ```
 
 | Параметр  | Обязателен      | По умолчанию  |
@@ -24,17 +24,17 @@ npm run create <команда> -- --name <имя> [--style <тип>] [--path <�
 
 ```bash
 # 1.1. Компонент
-npm run create page-exchange -- --name page-exchange1
+npm run CREATE:page page-exchange -- --name page-exchange1
 ```
 
 ```bash
 # 1.2. Страница детализации
-npm run create page-detail -- --name page-detail1 --style less --path src/app/pages
+npm run CREATE:page page-detail -- --name page-detail1 --style less --path src/app/pages
 ```
 
 ```bash
 # 1.3. Страница списка с сервисами
-npm run create page-data -- --name page-data1
+npm run CREATE:page page-data -- --name page-data1
 ```
 
 ```bash
