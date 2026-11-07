@@ -59,14 +59,17 @@ ng build tool-page-ang15   # сборка в dist/
 
 ```jsonc
 	"devDependencies": {
-		// ⬇️ вот этот пакет — только для разработки
-		"tool-page-ang15": "^0.0.23"
+		// ⬇️ эти пакеты — только для разработки
+		"tool-page-ang15": "^x.y.z",
+		"tool-snippets": "^x.y.z"
 	}
 ```
 
 ```jsonc
 	"scripts": {
-		"create": "node node_modules/tool-page-ang15/tools/index.js"
+		"CREATE:page": "node dist/tool-page-ang15/tools/tool-generator/index.js",
+		"SNIPPETS:webstorm": "node ./dist/tool-snippets/webstorm/install-snippets.js",
+		"SNIPPETS:vscode": "node ./dist/tool-snippets/vscode/install-snippets.js",
 	}
 }
 ```
