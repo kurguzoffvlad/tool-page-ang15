@@ -1,5 +1,7 @@
 # ToolPageAng15
 
+## Использование в https://github.com/kurguzoffvlad/tool-libs-ang15
+
 Генератор (разработка на NODE v20.19.5) - страниц и компонентов для ОБМЕНА МЕТОДАМИ И СВОЙСТВАМИ между компонентами.
 
 ОБМЕН МЕТОДАМИ И СВОЙСТВАМИ между компонентами происходит через ExchangeLighthouse и ExchangeSubscribeComponent.
